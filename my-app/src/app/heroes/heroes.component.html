@@ -1,0 +1,32 @@
+<head>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+<h2>My Heroes</h2>
+
+Hero name: <input [(ngModel)]="newHero" type="text" /> <button class="btn btn-success" (click)="onAdd(newHero)">Add</button>
+
+<ul class="heroes">
+  <li *ngFor="let hero of heroes"
+    [class.selected]="hero === selectedHero" (click)="onSelect(hero)">
+    <span class="badge">{{hero.id}}</span> {{hero.name}} 
+    <a href="#">
+          <span class="glyphicon glyphicon-trash"></span>
+    </a>
+  </li>
+</ul>
+
+<div *ngIf="selectedHero">
+
+  <h3>{{selectedHero.name | uppercase}} Details</h3>
+  <div><span>id: </span>{{selectedHero.id}}</div>
+  <div>
+    <label>name:
+      <input [(ngModel)]="selectedHero.name" placeholder="name">
+    </label>
+  </div>
+
+</div>
+
+</body>
