@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Hero } from '../hero';
 import { HEROES } from '../mock-heroes';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import 'rxjs/Rx';
 
 @Component({
@@ -10,17 +10,19 @@ import 'rxjs/Rx';
   styleUrls: ['./heroes.component.css']
 })
 
+
 export class HeroesComponent implements OnInit {
 
   apiurl='https://cors.io/?https://api-test-rahu619.c9users.io/api/heroes/';
   heroes :Hero[];
   lastrow:number;
-  selectedHero: Hero;
+  selectedHero: Hero=null;
+  newHero:string='';
+  
 
   constructor(private http: HttpClient) { 
    
   }
-
 
   ngOnInit() {
 
@@ -29,12 +31,15 @@ export class HeroesComponent implements OnInit {
 
   getAll():void{
 
+  console.log(this.apiurl+'getall.php');
        this.http.get(this.apiurl+'getall.php')
          .toPromise()
          .then(response => {
-           this.heroes= (JSON.parse(response).heroes as Hero[]);
-           this.lastrow= this.heroes[this.heroes.length-1].id;
 
+          //console.log(JSON.parse(response.toString()));
+           this.heroes= (JSON.parse(response.toString()).heroes as Hero[]);
+           this.lastrow= this.heroes[this.heroes.length-1].id;
+           this.hideDetails();
          });
   }
 
@@ -42,12 +47,58 @@ export class HeroesComponent implements OnInit {
     this.selectedHero = hero;
   }
 
-  onAdd(heroname: string): void {    
-   //this.heroes.push(new Hero(++this.lastrow,heroname));
-
-    this.http.post(this.apiurl+'add.php/'+ new Hero(++this.lastrow,heroname) )
-             .then(res=> this.getAll());
+  hideDetails(){
+      this.selectedHero=null;
   }
+
+  onAdd(heroname: string): void {    
+   var id=(++this.lastrow);
+
+   //let FormData = "id="+id+"&name="+heroname;
+
+    this.http.get(this.apiurl+'add.php?id='+id+'&name='+heroname)
+              .toPromise()
+             .then(res=> {
+               this.getAll();
+               this.newHero=null;
+             });
+
+   
+
+  }
+
+  onDelete(hero:Hero):void {
+
+  console.log(hero.id);
+  
+  if(confirm("Delete "+hero.name+"?")) {
+
+    this.http.get(this.apiurl+'delete.php?id=' + hero.id)
+             .toPromise()
+             .then(res=> {
+               this.getAll();
+               
+             });
+  
+   }
+
+  }
+
+  onUpdate(hero:Hero):void{
+
+   console.log('Update',hero.id,hero.name);
+     this.http.get(this.apiurl+'update.php?id=' + hero.id+'&name='+hero.name)
+             .toPromise()
+             .then(res=> {
+               this.getAll(); 
+               //this.hideDetails();          
+             });
+
+
+  }
+
+
+
 
 
 

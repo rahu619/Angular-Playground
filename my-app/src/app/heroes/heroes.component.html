@@ -1,32 +1,63 @@
 <head>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 </head>
 
 <body>
-<h2>My Heroes</h2>
 
-Hero name: <input [(ngModel)]="newHero" type="text" /> <button class="btn btn-success" (click)="onAdd(newHero)">Add</button>
+<div class="container">
+  <div class="row">
+    <div class="center-block">
+      Hero name: <input [(ngModel)]="newHero" type="text" /> <button class="btn btn-success" (click)="onAdd(newHero)">Add</button>
+    </div>
 
-<ul class="heroes">
-  <li *ngFor="let hero of heroes"
+  </div>
+
+  <div class="row">
+    <div class="center-block">
+    <ul class="heroes">
+    <li *ngFor="let hero of heroes"
     [class.selected]="hero === selectedHero" (click)="onSelect(hero)">
     <span class="badge">{{hero.id}}</span> {{hero.name}} 
     <a href="#">
-          <span class="glyphicon glyphicon-trash"></span>
+          <span class="glyphicon glyphicon-trash" (click)="onDelete(hero)"></span>
     </a>
   </li>
 </ul>
-
-<div *ngIf="selectedHero">
-
-  <h3>{{selectedHero.name | uppercase}} Details</h3>
-  <div><span>id: </span>{{selectedHero.id}}</div>
-  <div>
-    <label>name:
-      <input [(ngModel)]="selectedHero.name" placeholder="name">
-    </label>
   </div>
+</div>
+
+
+
+<div class="row">
+  <div class="center-block">
+    <div class="bg-light" *ngIf="selectedHero">
+
+    <button type="button" class="close" aria-label="Close" (click)="hideDetails()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+
+    <h4>{{selectedHero.name | uppercase}} </h4>
+    <div><span>id: </span>{{selectedHero.id}}</div>
+    <div>
+      <label>name:
+        <input type="text" [(ngModel)]="selectedHero.name" placeholder="name">
+      </label>
+
+      <button class="btn btn-danger" (click)="onUpdate(selectedHero)">Update</button>
+    </div>
+
+    </div>
+  </div>
+</div>
+
 
 </div>
+
+
+
+
+
+
 
 </body>
